@@ -119,3 +119,21 @@ check = np.dot(omega,X)
 
 # 计算因子收益率
 f = np.dot(omega,r_all)
+
+# 检验回归结果的质量
+ut = r_all - np.dot(X,f)
+ut_squre = np.diag(np.dot(ut,ut.T))
+
+r_avg = 1/T*np.dot(r_all,np.ones((T,T)))
+r_mi = r_all - r_avg
+r_mi_squre = np.diag(np.dot(r_mi,r_mi.T))
+
+# 每一个股票的Rsqure
+Rsqure = 1- ut_squre/r_mi_squre
+plt.hist(Rsqure)
+
+# root mean squre
+RMS = 1 - np.dot(np.diag(v),ut_squre) / np.dot(np.diag(v),r_mi_squre)
+
+
+
