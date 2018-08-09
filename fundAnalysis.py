@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import sys
 import matplotlib
 import datetime
+import math as ma
 
 print('Python version ' + sys.version)
 print('Pandas version: ' + pd.__version__)
@@ -19,30 +20,31 @@ startTime = datetime.datetime(2014,1,3,0,0)
 endTime = datetime.datetime(2016,1,3,0,0)
 
 
-class fundAnalyse:
+class FundAnalyse:
     def __init__(self,inputFile,startTime,endTime):
         #计算起始时间结点
         self.startIndex = 0
         self.endIndex = 1
         self.data = pd.read_excel(inputFile)
         
-        matrix = data.iloc[2:,:]
+        self.matrix = self.data.iloc[2:,:]
         
         # 时间列表
-        times = matrix.iloc[:,0].values
+        self.times = self.matrix.iloc[:,0].values
         
         # 开始提示符
         sign = 0
-        for i in range(0,len(times)):
-            if times[i] <= endTime:
+        for i in range(0,len(self.times)):
+            if self.times[i] <= endTime:
                 self.endIndex = i
-            if times[i] >= startTime and sign == 0:
-                startIndex = i
+            if self.times[i] >= startTime and sign == 0:
+                self.startIndex = i
                 sign = 1
                 
         # 只取这一时间段的数据
-        self.matrix = matrix.iloc[startIndex:(endIndex+1),:]
-        self.N = endIndex - startIndex + 1
+        self.times = self.matrix.iloc[self.startIndex:(self.endIndex+1),0]
+        self.matrix = self.matrix.iloc[self.startIndex:(self.endIndex+1),:]
+        self.N = self.endIndex - self.startIndex + 1
 
     #计算基金最大回撤-收益
     def maxshortfall_return(self,outputFile):
@@ -56,7 +58,7 @@ class fundAnalyse:
                 if shortfall > maxshortfall:
                     maxshortfall = shortfall
             yieldRate = vector[len(vector)-1]/vector[0] - 1
-            result[x] = [data[x].iloc[0],yieldRate,maxshortfall]
+            result[x] = [self.data[x].iloc[0],yieldRate,maxshortfall]
         
         # 计算分位数
         result2 = result.copy()
@@ -97,22 +99,21 @@ class fundAnalyse:
         输入：输出文件存储地址
         返回：一个list，第一个元素是原值的dataframe，第二个元素是分位数的dataframe
         """
+        N = a.matrix.shape[0]
+        
         result = pd.DataFrame()
         # 计算一共经历了多少天
-        timeLength = (times[endIndex] - times[startIndex]).days
-        
-        # 只取这一时间段的数据
-        matrix = matrix.iloc[startIndex:(endIndex+1),:]
+        timeLength = (self.times[-1] - self.times[0]).days
         
         # 计算每一天距开始日期有多少天
-        timeVector =  times[startIndex:(endIndex+1)] - times[startIndex]
-        dayCount = np.zeros((endIndex-startIndex+1,1))
-        for i in range(0,endIndex-startIndex+1):
+        timeVector =  self.times - self.times[0]
+        dayCount = np.zeros((self.endIndex-self.startIndex+1,1))
+        for i in range(0,self.endIndex-self.startIndex+1):
             dayCount[i] = int(timeVector[i].days)
         
         # 排序
-        for x in matrix.keys()[1]:
-            vector = matrix[x].values
+        for x in self.matrix.keys()[1:]:
+            vector = self.matrix[x].values
             yieldRate = vector[len(vector)-1]/vector[0]
             ln_yieldRate_slope = ma.log(yieldRate)/timeLength
             ln_yieldRate_vector = ln_yieldRate_slope * dayCount
@@ -130,13 +131,13 @@ class fundAnalyse:
             re_moment3 = (np.dot(np.ones((1,N)),delta*delta*delta)/N)[0]
             # 离差的三阶中心矩
             re_moment4 = (np.dot(np.ones((1,N)),delta*delta*delta*delta)/N)[0]
-            result[x] = [data[x].iloc[0],yieldRate,re_moment1,re_moment2,re_moment3,re_moment4]
+            result[x] = [self.data[x].iloc[0],yieldRate,re_moment1,re_moment2,re_moment3,re_moment4]
         
         # 计算分位数
         result2 = result.copy()
         result2.iloc[1:5] = result2.iloc[1:5].rank(1)
         for i in range(1,5):
-        result2.iloc[i] = result2.iloc[i]/len(result2.columns)
+            result2.iloc[i] = result2.iloc[i]/len(result2.columns)
         
         #原值表示法
         result3 = result.T.copy()
@@ -157,7 +158,7 @@ class fundAnalyse:
         return [result3,result4]
 
         
-a = fundAnalyse(inputFile,startTime,endTime)
+a = FundAnalyse(inputFile,startTime,endTime)
 a.maxshortfall_return(fileSave)
 a.path_return(fileSave)
 

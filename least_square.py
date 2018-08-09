@@ -5,8 +5,16 @@ def least_square6(data_train, label_train):
 	'''
 	帶約束的回归方程计算，包含重仓股因子
 	'''
+	
 	# 时间窗口长度
 	N = data_train.shape[0]
+	
+	for i in range(N):
+	    if data_train[i,0] is None:
+	        data_train = data_train[:,1:]
+	        break
+	    
+	data_train = np.hstack((np.ones((N,1)),data_train))
 	
 	# 防止类型错误
 	data_train = np.array(data_train,dtype=np.float64)
@@ -29,7 +37,7 @@ def least_square6(data_train, label_train):
 
 
 #test
-X =  np.random.rand(20,6)
-X = np.hstack((np.ones((20,1)),X))
+X =  np.random.rand(20,5)
+X =  np.hstack((np.array([None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None]).reshape(20,1),X))
 Y =  np.random.rand(20,1)
 result = least_square6(X,Y)
