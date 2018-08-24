@@ -157,10 +157,10 @@ class FundAnalyse:
             
         return [result3,result4]
 
-        
-a = FundAnalyse(inputFile,startTime,endTime)
-a.maxshortfall_return(fileSave)
-a.path_return(fileSave)
+if __name__ == "__main__":
+    a = FundAnalyse(inputFile,startTime,endTime)
+    a.maxshortfall_return(fileSave)
+    a.path_return(fileSave)
 
 
 

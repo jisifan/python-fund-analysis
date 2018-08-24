@@ -6,11 +6,11 @@ import sys
 import matplotlib
 import datetime
 import math as ma
+import time
 
 from WindPy import w
 
 w.start()
-
 
 # 返回报告期
 # 参数：datetime对象
@@ -28,8 +28,11 @@ class PortfolioAnalyse:
             对标指数前六个月收益、对标指数后六个月收益、基金前六个月单位净值收益、基金后六个月单位净值收益。
         每行代表一个报告期
         '''
+        
         self.fundcode = fundCode
+        
         self.fundname = w.wss(fundCode, "sec_name").Data[0][0]
+
         fundSetup = w.wss(fundCode, "fund_setupdate").Data[0][0]
         # 往前移半年，并获取交易日期
         startDate = max(fundSetup-datetime.timedelta(weeks=24),startTime-datetime.timedelta(weeks=24))
@@ -252,20 +255,25 @@ def batch_process(stockList,indexCode,startTime,endTime,outputFile = r'C:\Users\
     return [jiemian_Dict,jiemian_t,zhibiao_Dict,zhibiao_t,]
 
 # 批量计算
-startTime = datetime.datetime(2005,1,1,0,0)
-endTime = datetime.datetime(2018,7,24,0,0)
-indexCode = "000300.SH"
-# inputFile = r'C:\Users\tangheng\Dropbox\summerIntern\代码\mutual-fund-analysis\研报备份\回测数据（中证800、没换过基金经理）.xlsm'
-# data = pd.read_excel(inputFile,sheet_name="Sheet1")
-# stockList = data.iloc[:,0]
-stockList = ["161005.OF","000527.OF","540006.OF","000172.OF","161017.OF","000311.OF", \
-        "001878.OF","163406.OF","110011.OF","570005.OF","206007.OF","180031.OF"]
-outputFile = r'C:\Users\tangheng\Dropbox\summerIntern\代码\mutual-fund-analysis\研报备份\明星基金经理.xlsx'
-batch_process(stockList,indexCode,startTime,endTime,outputFile)
+if __name__ == "__main__":
+    startTime = datetime.datetime(2012,10,20,0,0)
+    endTime = datetime.datetime(2018,7,24,0,0)
+    indexCode = "000300.SH"
+    # inputFile = r'C:\Users\tangheng\Dropbox\summerIntern\代码\mutual-fund-analysis\研报备份\回测数据（中证800、没换过基金经理）.xlsm'
+    # inputFile = r'C:\Users\tangheng\Dropbox\summerIntern\data\筛选基金.xlsx'
+    # data = pd.read_excel(inputFile,sheet_name="股票仓位超过60%，成立早于2014年，且不是分基金")
+    # stockList = data.iloc[:,0]
+    stockList = ["180031.OF"]
+    outputFile = r'C:\Users\tangheng\Dropbox\summerIntern\代码\mutual-fund-analysis\研报备份\石老师结果.xlsx'
+    [jiemian_Dict,jiemian_t,zhibiao_Dict,zhibiao_t,] = batch_process(stockList,indexCode,startTime,endTime,outputFile)
+    
+    
 
-
-
-
-
+# startTime = datetime.datetime(2016,10,20,0,0)
+# endTime = datetime.datetime(2018,7,24,0,0)
+# indexCode = "000300.SH"
+# stockList = ["161005.OF"]
+# outputFile = r'C:\Users\tangheng\Dropbox\summerIntern\代码\mutual-fund-analysis\研报备份\所有样本基金持仓分析3.xlsx'
+# [jiemian_Dict,jiemian_t,zhibiao_Dict,zhibiao_t] = batch_process(stockList,indexCode,startTime,endTime,outputFile)
 
 

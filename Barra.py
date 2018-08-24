@@ -15,6 +15,9 @@ import datetime
 # b = pd.DataFrame(data=a,index = [1,2],columns=[2,3,4,5,6,7])
 # c = pd.Series(list(a),index = [1,2])
 
+# # dataframe减去自己的某列
+# kk.sub(kk.iloc[:,3],axis=0)
+
 # data = [
 #         ["2017-10-18",  11.53,  11.69,  11.70,  11.51,   871365.0,  "000001"],
 #         ["2017-10-19",  11.64,  11.63,  11.72,  11.57,   722764.0,  "000001"],
