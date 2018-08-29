@@ -80,6 +80,10 @@ T = 60
 
 K = 1+P+Q
 
+####################################
+# 构造虚拟数据
+####################################
+
 # 构造虚拟的v
 v = np.random.rand(1,N)
 v = (v/v.sum()).reshape(N,) #写法很关键
@@ -100,6 +104,10 @@ temp = np.random.rand(N,Q)
 # 构造X，即所有暴露
 X = np.hstack((np.ones((N,1)),X))
 X = np.hstack((X,temp))
+
+####################################
+# 计算因子收益率
+####################################
 
 # 计算行业权重s
 XP = X[:,1:(P+1)] #行业因子暴露
@@ -123,6 +131,10 @@ check = np.dot(omega,X)
 # 计算因子收益率
 f = np.dot(omega,r_all)
 
+####################################
+# 结果检验
+####################################
+
 # 检验回归结果的质量
 ut = r_all - np.dot(X,f)
 ut_squre = np.diag(np.dot(ut,ut.T))
@@ -137,6 +149,22 @@ plt.hist(Rsqure)
 
 # root mean squre
 RMS = 1 - np.dot(np.diag(v),ut_squre) / np.dot(np.diag(v),r_mi_squre)
+
+####################################
+# 计算Newey-West调整的协方差矩阵
+####################################
+
+# 原始值
+M_0 = np.dot(f,f.T)/T
+cov_f = M_0
+# Newey-West调整的期数
+q = 15
+for i in range(1,q+1):
+    M_i = np.dot(f[:,0:T-i],f[:,i:T].T)/T
+    w_i = 1 - i/(1+q)
+    cov_f = cov_f + M_i
+# 结果在cov_f中
+
 
 
 

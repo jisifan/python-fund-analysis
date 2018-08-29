@@ -94,11 +94,21 @@ class WebHandle():
         reg_fund3 = re.compile(reg3)
         temp3 = reg_fund3.findall(buffer2)
 
+        reg4 = r'<tr class="ev">(.+?)</tr>'
+        reg_fund4 = re.compile(reg4)
+        temp4 = reg_fund4.findall(buffer2)
+
         parser1 = MyHTMLParser()
-        self.kk = list()
-        for x in temp3:
-            parser1.feed(x)
-            self.kk.append(parser1.push_data())
+
+        length = max(len(temp3),len(temp4))
+
+        for i in range(length):
+            if(i<len(temp3)):
+                parser1.feed(temp3[i])
+                self.kk.append(parser1.push_data())
+            if(i<len(temp4)):
+                parser1.feed(temp4[i])
+                self.kk.append(parser1.push_data())
 
         return self.kk
 
@@ -130,9 +140,11 @@ def mission():
 
     # 计算明天的执行时间
     now_time = datetime.datetime.now()
-    now_year = now_time.date().year
-    now_month = now_time.date().month
-    now_day = now_time.date().day
+    if now_time.hour >= 9:
+        now_time = now_time + datetime.timedelta(days=1)
+    now_year = now_time.year
+    now_month = now_time.month
+    now_day = now_time.day
     next_time = str(now_year)+"-"+str(now_month)+"-"+str(now_day)+" 09:00:00"
 
     # 输出执行情况
