@@ -53,7 +53,7 @@ class PortfolioAnalyse:
             reporttime = reportPeriod(tradeday).strftime("%Y%m%d")
             # 取出报告期持仓详情
             command = "rptdate="+ reporttime +";windcode="+fundCode+";field=stock_code,proportiontototalstockinvestments"
-            stockHolds = w.wset("allstockhelddetaill3",command).Data
+            stockHolds = w.wset("allfundhelddetail",command).Data
             # 如果持仓为空则跳过
             if len(stockHolds) <2:
                 continue
@@ -257,23 +257,30 @@ def batch_process(stockList,indexCode,startTime,endTime,outputFile = r'C:\Users\
 # 批量计算
 if __name__ == "__main__":
     startTime = datetime.datetime(2012,10,20,0,0)
-    endTime = datetime.datetime(2018,7,24,0,0)
-    indexCode = "000300.SH"
+    endTime = datetime.datetime(2018,8,29,0,0)
+    indexCode = "000906.SH"
     # inputFile = r'C:\Users\tangheng\Dropbox\summerIntern\代码\mutual-fund-analysis\研报备份\回测数据（中证800、没换过基金经理）.xlsm'
     # inputFile = r'C:\Users\tangheng\Dropbox\summerIntern\data\筛选基金.xlsx'
     # data = pd.read_excel(inputFile,sheet_name="股票仓位超过60%，成立早于2014年，且不是分基金")
     # stockList = data.iloc[:,0]
-    stockList = ["180031.OF"]
-    outputFile = r'C:\Users\tangheng\Dropbox\summerIntern\代码\mutual-fund-analysis\研报备份\石老师结果.xlsx'
+    stockList = ["160215.OF","020001.OF","001576.OF","001790.OF","160211.SZ","001542.OF"\
+                ,"020003.OF","160212.OF","160211.OF","020026.OF","003593.OF","001645.OF"\
+                ,"160220.OF","000526.OF","000511.OF","001265.OF","000953.OF","003689.OF"]
+    outputFile = r'C:\Users\tangheng\Dropbox\summerIntern\代码\mutual-fund-analysis\研报备份\石老师结果2.xlsx'
     [jiemian_Dict,jiemian_t,zhibiao_Dict,zhibiao_t,] = batch_process(stockList,indexCode,startTime,endTime,outputFile)
     
-    
+# startTime = datetime.datetime(2012,10,20,0,0)
+# endTime = datetime.datetime(2018,8,29,0,0)
+# indexCode = "000906.SH"
+# x = "160215.OF"
+# a = PortfolioAnalyse(x,indexCode,startTime,endTime)
 
-# startTime = datetime.datetime(2016,10,20,0,0)
-# endTime = datetime.datetime(2018,7,24,0,0)
-# indexCode = "000300.SH"
-# stockList = ["161005.OF"]
-# outputFile = r'C:\Users\tangheng\Dropbox\summerIntern\代码\mutual-fund-analysis\研报备份\所有样本基金持仓分析3.xlsx'
-# [jiemian_Dict,jiemian_t,zhibiao_Dict,zhibiao_t] = batch_process(stockList,indexCode,startTime,endTime,outputFile)
+# tradeday = datetime.datetime(2017,8,29,0,0)
+# fundCode = "160215.OF"
+# reporttime = reportPeriod(tradeday).strftime("%Y%m%d")
+#             # 取出报告期持仓详情
+# command = "rptdate="+ reporttime +";windcode="+fundCode+";field=stock_code,proportiontototalstockinvestments"
+# stockHolds = w.wset("allfundhelddetail",command).Data
+
 
 
